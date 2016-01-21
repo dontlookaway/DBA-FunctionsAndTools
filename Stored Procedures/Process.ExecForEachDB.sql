@@ -3,7 +3,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
 GO
-CREATE Procedure [Process].[ExecForEachDB] ( @cmd NVarchar(2000) )--limited to 2000 characters as script errors occur trying to execute scripts with more characters
+CREATE Proc [Process].[ExecForEachDB] ( @cmd NVarchar(2000) )--limited to 2000 characters as script errors occur trying to execute scripts with more characters
 As /*
 Stored Procedure created by Chris Johnson
 20th January 2016
@@ -25,8 +25,8 @@ Based off of http://sqlblog.com/blogs/aaron_bertrand/archive/2010/02/08/bad-habi
         If Not Exists ( Select  1
                         From    [sys].[tables] [T]
                                 Left Join [sys].[schemas] As [S] On [S].[schema_id] = [T].[schema_id]
-                        Where   [S].[name] = '[History]'
-                                And [T].[name] = '[ExecForEachDBLogs]' )
+                        Where   [S].[name] = 'History'
+                                And [T].[name] = 'ExecForEachDBLogs' )
             Begin
                 Begin Try
                     Create Table [History].[ExecForEachDBLogs]
@@ -58,8 +58,8 @@ Based off of http://sqlblog.com/blogs/aaron_bertrand/archive/2010/02/08/bad-habi
         If Not Exists ( Select  1
                         From    [sys].[tables] [T]
                                 Left Join [sys].[schemas] As [S] On [S].[schema_id] = [T].[schema_id]
-                        Where   [S].[name] = '[History]'
-                                And [T].[name] = '[ExecForEachDBErrorLogs]' )
+                        Where   [S].[name] = 'History'
+                                And [T].[name] = 'ExecForEachDBErrorLogs' )
             Begin
                 Begin Try
                     Create Table [History].[ExecForEachDBErrorLogs]
