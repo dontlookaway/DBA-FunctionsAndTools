@@ -10,3 +10,5 @@ Any tools developed should include
    > descriptions of uncommon functions and stored procedures
    > work within a 2008 r2 + environment
      > any functions that are limited to a future/legacy version of SQL Server should be labelled clearly
+
+Validation should be done of all code intially this will be done by submission to [Codereview.Stackexchange](http://codereview.stackexchange.com/)
