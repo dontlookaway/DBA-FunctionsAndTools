@@ -1,3 +1,4 @@
+
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
@@ -22,6 +23,16 @@ CREATE TABLE #SpChanges
 ,OriginalDef NVarchar(max) 
 ,NewDef NVarchar(max)
 )
+
+Insert [#SpChanges]
+        ( [ProcName]
+        , [OriginalDef]
+        , [NewDef]
+        )
+Values  ( N'WARNING'  -- ProcName - nvarchar(max)
+        , N'DO NOT RUN THESE DEFINITIONS WITHOUT CHECKING'  -- OriginalDef - nvarchar(max)
+        , N'DO NOT RUN THESE DEFINITIONS WITHOUT CHECKING'  -- NewDef - nvarchar(max)
+        )
 
 Declare StoredProcs Cursor Local Forward_Only Static Read_Only
                 For
