@@ -3,7 +3,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
 GO
-CREATE Proc [Process].[ExecForEachDB] ( @cmd NVarchar(2000) )--limited to 2000 characters as script errors occur trying to execute scripts with more characters
+CREATE Proc [Process].[ExecForEachDB] ( @cmd NVarchar(Max) )
 As /*
 Stored Procedure created by Chris Johnson
 20th January 2016
@@ -17,9 +17,9 @@ Based off of http://sqlblog.com/blogs/aaron_bertrand/archive/2010/02/08/bad-habi
         Set NoCount On;
 	
 	--Declare variables
-        Declare @SqlScript NVarchar(Max)
-          , @Database NVarchar(257)
-          , @ErrorMessage NVarchar(500);
+        Declare @SqlScript NVarchar(Max)= ''
+          , @Database NVarchar(257)=''
+          , @ErrorMessage NVarchar(Max)='';
 
 	--Try to create Logging table (if permissions to create exist)
         If Not Exists ( Select  1
@@ -78,7 +78,8 @@ Based off of http://sqlblog.com/blogs/aaron_bertrand/archive/2010/02/08/bad-habi
 	--Test validity, all scripts should contain a "?" to be used in place of a db name
         If @cmd Not Like '%?%'
             Begin
-                Set @ErrorMessage = 'ExecForEachDB failed, script does not contain the string "?" '
+                Set @ErrorMessage = Cast('' As NVarchar(max))
+				Set @ErrorMessage = @ErrorMessage+'ExecForEachDB failed, script does not contain the string "?" '
                     + @cmd;
 
                 --If is included as permissions may not be available to create this table
@@ -96,7 +97,7 @@ Based off of http://sqlblog.com/blogs/aaron_bertrand/archive/2010/02/08/bad-habi
                 Raiserror (@ErrorMessage,13,1);
             End;
     
-        If @cmd Like '%?%'
+        If @cmd Like '%?%' 
             Begin
 	--Use Cursor to hold list of databases to execute against
                 Declare [DbNames] Cursor Local Forward_Only Static Read_Only
@@ -114,15 +115,16 @@ Based off of http://sqlblog.com/blogs/aaron_bertrand/archive/2010/02/08/bad-habi
 
                 While @@fetch_status = 0 --when fetch is successful
                     Begin
-                        Set @SqlScript = Replace(Replace(Replace(@cmd , '?' ,
-                                                              @Database) ,
-                                                         '[[' , '[') , ']]' ,
-                                                 ']');--[[ & ]] caused by script including [?]
+                        Set @SqlScript = Cast('' As NVarchar(Max));
+                        Set @SqlScript = @SqlScript
+                            + Replace(Replace(Replace(@cmd , '?' , @Database) ,
+                                              '[[' , '[') , ']]' , ']');--[[ & ]] caused by script including [?]
                         Begin Try 
                             Exec(@SqlScript);
                         End Try
                         Begin Catch --if error happens against any db, raise a high level error advising the database and print the script
-                            Set @ErrorMessage = 'Script failed against database '
+                            Set @ErrorMessage = Cast('' As NVarchar(max))
+							Set @ErrorMessage = @ErrorMessage + 'Script failed against database '
                                 + @Database;
                             Raiserror (@ErrorMessage,13,1);
                             Print @SqlScript;
