@@ -107,6 +107,7 @@ Based off of http://sqlblog.com/blogs/aaron_bertrand/archive/2010/02/08/bad-habi
                     Where   [state] = 0 --online databases
                             And [is_read_only] = 0 --only databases that can be executed against
                             And [database_id] > 4 --only user databases
+							And has_dbaccess([name]) = 1 --only dbs current user has access to
                     Order By [name];
 
                 Open [DbNames];
