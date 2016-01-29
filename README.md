@@ -1,5 +1,5 @@
-# DBA-FunctionsAndTools
-Project to collate useful SQL functions and tools 
+# DBA Functions and Tools
+The aim of this project is to collate useful SQL functions and tools that can be dropped onto a server and provide immediate benefit.
 
 The tools that are to be collated should be
    > Business agnostic - have some use regardless of business processes
