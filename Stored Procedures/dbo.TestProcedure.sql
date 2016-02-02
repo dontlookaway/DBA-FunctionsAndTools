@@ -1,3 +1,4 @@
+
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
@@ -12,7 +13,9 @@ Procedure used to test and display procs developed
 As
 Begin
 	Declare @RedTagDB Varchar(255)=Db_Name()
-	Exec [Process].[UspInsert_RedTagLogs] @StoredProcSchema = 'dbo' , -- varchar(255)
+	Exec [Process].[UspInsert_RedTagLogs] 
+		@StoredProcDb = 'AdminControl',
+		@StoredProcSchema = 'dbo' , -- varchar(255)
 	    @StoredProcName = 'TestProcedure' , -- varchar(255)
 	    @UsedByType = @RedTagType ,
 	    @UsedByName = @RedTagUse , 
