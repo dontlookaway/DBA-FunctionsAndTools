@@ -1,3 +1,4 @@
+
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
@@ -59,7 +60,7 @@ The purpose of this stored procedure is to search for stored procs by name, sche
               , [ExecScript] = ''exec '' + QuoteName([S].[name]) + ''.''
                 + QuoteName([P].[name])
                 + Coalesce(Stuff(( Select Distinct
-                                            '', '' + QuoteName([P2].[name])
+                                            '', '' + [P2].[name]
                                             + '' = ''
                                    From     [sys].[parameters] As [P2]
                                    Where    [P2].[object_id] = [P].[object_id]
