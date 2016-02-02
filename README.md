@@ -11,8 +11,6 @@ Any tools developed should include
 
 > any functions that are limited to a future/legacy version of SQL Server should be labelled clearly
 
-
-
 Validation should be done of all code intially this will be done by submission to [Codereview.Stackexchange](http://codereview.stackexchange.com/) , in the future this will ideally be done in a shared forum.
 
 ## Concepts ##
@@ -22,9 +20,37 @@ Red tagging is a tool from Lean Six Sigma project management. The idea is to sor
 
 To set this up is onerous and requires code change so I would suggest only adding this:
 
- - You have a small environment
+ - If you have a small environment or are setting up a *new environment*
  - To a subset of procedures that you have targeted for review
 
 The components of SQL Red Tagging are:
 
- - TBC
+|Name|Type|Description|
+|---|---|---|
+|History.RedTagLogs|Table|Logging table|
+|Lookups.RedTagsUsedByType|Table|Lookup table with types|
+|Process.UspInsert_RedTagLogs|Stored Procedure|Inserts Logs|
+|Reports.UspResults_RedTagDetails|Stored Procedure|Returns details of Red Tag activity|
+
+By adding the *Process.UspInsert_RedTagLogs* to stored procs this changes the parameter to run from this
+
+> EXEC	[dbo].[TestProcedure] @TextToRun = N'Print ''?'''
+
+to this
+
+> EXEC	[dbo].[TestProcedure] @TextToRun = N'Print ''?''',
+		@RedTagType = N'M',
+		@RedTagUse = N'Testing'
+
+The beginning of the proc will need to be altered as well to include the below script
+
+> 	Declare @RedTagDB Varchar(255)=Db_Name()
+> 
+> Exec [Process].[UspInsert_RedTagLogs] 
+		@StoredProcDb = 'AdminControl',
+		@StoredProcSchema = 'dbo' ,
+	    @StoredProcName = 'TestProcedure' ,
+	    @UsedByType = @RedTagType ,
+	    @UsedByName = @RedTagUse , 
+	    @UsedByDb = @RedTagDB;
+
