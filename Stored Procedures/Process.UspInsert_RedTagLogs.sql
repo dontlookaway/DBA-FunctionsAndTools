@@ -19,21 +19,21 @@ Stored proc to insert logs
 */
     Begin
 		--create schemas if needed
-        If Exists ( Select  1
+        If Not Exists ( Select  1
                     From    [sys].[schemas] As [S]
                     Where   [S].[name] = 'Reports' )
             Begin
                 Declare @Schema1 Varchar(500)= 'Create Schema Reports';
                 Exec (@Schema1);
             End;
-        If Exists ( Select  1
+        If Not Exists ( Select  1
                     From    [sys].[schemas] As [S]
                     Where   [S].[name] = 'History' )
             Begin
                 Declare @Schema2 Varchar(500)= 'Create Schema History';
                 Exec (@Schema2);
             End;
-        If Exists ( Select  1
+        If Not Exists ( Select  1
                     From    [sys].[schemas] As [S]
                     Where   [S].[name] = 'Lookups' )
             Begin
@@ -57,6 +57,28 @@ Stored proc to insert logs
                                Allow_Page_Locks = On ) On [PRIMARY]
                     )
                 On  [PRIMARY];
+                Insert  Into [Lookups].[RedTagsUsedByType]
+                        ( [UsedByType]
+                        , [UsedByDescription]
+                        )
+                Values  ( 'M'
+                        , 'Manual Run'
+                        );
+                Insert  Into [Lookups].[RedTagsUsedByType]
+                        ( [UsedByType]
+                        , [UsedByDescription]
+                        )
+                Values  ( 'R'
+                        , 'Report'
+                        );
+                Insert  Into [Lookups].[RedTagsUsedByType]
+                        ( [UsedByType]
+                        , [UsedByDescription]
+                        )
+                Values  ( 'S'
+                        , 'Scheduled Run'
+                        );
+
             End;
         If Not Exists ( Select  1
                         From    [sys].[tables] As [T]
