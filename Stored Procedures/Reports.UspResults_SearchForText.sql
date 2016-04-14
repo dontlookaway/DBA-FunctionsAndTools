@@ -1,3 +1,4 @@
+
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
@@ -201,9 +202,9 @@ As
 						from ' + QuoteName([CL].[DBName]) + '.'
                         + QuoteName([OL].[SchemaName]) + '.'
                         + QuoteName([OL].[ObjectName]) + '
-						where ' + QuoteName([CL].[ColumnName])
-                        + ' collate Latin1_General_CI_AI like '''
-                        + @TextToSearch + ''' collate Latin1_General_CI_AI
+						where lower(' + QuoteName([CL].[ColumnName])
+                        + ') collate Latin1_General_CI_AI like lower('''
+                        + @TextToSearch + ''') collate Latin1_General_CI_AI
 						having count(1)>0'
                 From    [#ColumnList] As [CL]
                         Left Join [#ObjectList] As [OL] On [OL].[object_id] = [CL].[object_id]
